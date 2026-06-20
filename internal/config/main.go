@@ -46,7 +46,7 @@ func NewConfig(opts ...Option) *Config {
 
 	cfg := &Config{
 		Host:					"localhost",
-		Port: 				8080,
+		Port: 				9090,
 		ReadTimeout: 	10 * time.Second,
 		WriteTimeout: 10 * time.Second,
 		IdleTimeout: 	120 * time.Second,
