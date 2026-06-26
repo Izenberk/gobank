@@ -3,6 +3,7 @@ package repository
 import (
 	"context"
 	"database/sql"
+	"errors"
 
 	"github.com/Izenberk/gobank/internal/domain"
 )
@@ -38,6 +39,9 @@ func (r *PostgresAccountRepository) GetByID(ctx context.Context, id int64) (*dom
 	acc := &domain.Account{}
 	err := row.Scan(&acc.ID, &acc.Fullname, &acc.Balance, &acc.CreatedAt)
 	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, ErrNotFound
+		}
 		return nil, err
 	}
 	return acc, nil
