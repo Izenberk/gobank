@@ -18,15 +18,17 @@ func NewPostgresAccountRepository(db *sql.DB) *PostgresAccountRepository {
 	return &PostgresAccountRepository{db: db}
 }
 
-func (r *PostgresAccountRepository) Create(ctx context.Context, acc *domain.Account) error {
+func (r *PostgresAccountRepository) Create(ctx context.Context, acc *domain.Account) (int64, error) {
 	query := `
 		INSERT INTO accounts (fullname, balance, created_at)
 		VALUES ($1, $2, $3)
+		RETURNING id
 	`
+	var id int64
 
-	_, err := r.db.ExecContext(ctx, query,
-	acc.Fullname, acc.Balance, acc.CreatedAt)
-	return err
+	err := r.db.QueryRowContext(ctx, query,
+	acc.Fullname, acc.Balance, acc.CreatedAt).Scan(&id)
+	return id, err
 }
 
 func (r *PostgresAccountRepository) GetByID(ctx context.Context, id int64) (*domain.Account, error) {

@@ -10,7 +10,7 @@ import (
 
 
 type AccountRepository interface {
-	Create(ctx context.Context, acc *domain.Account) error
+	Create(ctx context.Context, acc *domain.Account) (int64, error)
 	GetByID(ctx context.Context, id int64) (*domain.Account, error)
 	UpdateByID(ctx context.Context, acc *domain.Account) error
 }
