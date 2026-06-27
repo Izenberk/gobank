@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"database/sql"
 	"log"
 	"net/http"
@@ -21,10 +22,15 @@ func main() {
 		w.Write([]byte("welcome"))
 	})
 
-	connStr := "postgres://postgres:password@localhost:5432/gobank?sslmode=disable"
+	connStr := "postgres://postgres:password@localhost:5435/gobank?sslmode=disable"
+	ctx := context.Background()
 
 	db, err := sql.Open("pgx", connStr)
 	if err != nil {
+		log.Fatal(err)
+	}
+
+	if err := db.PingContext(ctx); err != nil {
 		log.Fatal(err)
 	}
 
