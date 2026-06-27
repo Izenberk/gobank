@@ -1,0 +1,11 @@
+bin/
+
+# Go test cache
+*.test
+
+# Environment variables (never commit secrets)
+.env
+.env.*
+
+# OS artifacts
+.DS_Store
