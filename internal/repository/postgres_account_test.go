@@ -3,6 +3,7 @@ package repository
 import (
 	"context"
 	"database/sql"
+	"errors"
 	"testing"
 
 	"github.com/Izenberk/gobank/internal/domain"
@@ -34,6 +35,18 @@ func TestPostgresAccountRepository_Create(t *testing.T) {
 	}
 	if acc.Balance != account.Balance {
 		t.Errorf("Balance = %v, want %v", acc.Balance, account.Balance)
+	}
+}
+
+func TestPostgresAccountRepository_GetByID_notFound(t *testing.T) {
+	db := newTestDB(t)
+	repo := NewPostgresAccountRepository(db)
+
+	ctx := context.Background()
+
+	_, err := repo.GetByID(ctx, -1)
+	if !errors.Is(err, ErrNotFound) {
+		t.Errorf("expected ErrNotFound, got %v", err)
 	}
 }
 
