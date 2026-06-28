@@ -50,6 +50,45 @@ func TestPostgresAccountRepository_GetByID_notFound(t *testing.T) {
 	}
 }
 
+func TestPostgresAccountRepository_UpdateByID(t *testing.T) {
+	db := newTestDB(t)
+	repo := NewPostgresAccountRepository(db)
+
+	account := &domain.Account{
+		Fullname: "John Doe",
+		Balance: 	1000,
+	}
+
+	account_upd := &domain.Account{
+		Fullname: "John DoDo",
+		Balance: 	1500,
+	}
+
+	ctx := context.Background()
+
+	ID, err := repo.Create(ctx, account)
+	if err != nil {
+		t.Fatalf("Create() error: %v", err)
+	}
+
+	account_upd.ID = ID
+
+	if err := repo.UpdateByID(ctx, account_upd); err != nil {
+		t.Fatalf("UpdateByID() error: %v", err)
+  }
+
+	acc, err := repo.GetByID(ctx, ID)
+	if err != nil {
+      t.Fatalf("GetByID() error: %v", err)
+  }
+	if acc.Fullname != account_upd.Fullname {
+		t.Errorf("Fullname = %v, want %v", acc.Fullname, account_upd.Fullname)
+	}
+	if acc.Balance != account_upd.Balance {
+		t.Errorf("Balance = %v, want %v", acc.Balance, account_upd.Balance)
+	}
+}
+
 func newTestDB(t *testing.T) *sql.DB {
 	connStr := "postgres://postgres:password@localhost:5435/gobank?sslmode=disable"
 	ctx := context.Background()
